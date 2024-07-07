@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // MySQL Connection
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
+    user: 'id22412436_root',
     password: '',
     database: 'pickupservice',
 });
@@ -22,6 +22,12 @@ const db = mysql.createConnection({
 db.connect((err) => {
   if (err) throw err;
   console.log('Connected to database');
+});
+
+app.get('/', (req, res) => {
+  console.log('Responding to root route');
+
+ 
 });
 
 app.get('/api/package-details', (req, res) => {
