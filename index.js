@@ -21,13 +21,12 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
   if (err) throw err;
-  console.log('Connected to database');
+  console.log('เชื่อมต่อกับฐานข้อมูลเรียบร้อยแล้ว');
 });
 
 app.get('/', (req, res) => {
-  console.log('Responding to root route');
-
- 
+  console.log('ตอบสนองต่อ root route');
+  res.send('Welcome to the API');
 });
 
 app.get('/api/package-details', (req, res) => {
@@ -35,7 +34,7 @@ app.get('/api/package-details', (req, res) => {
 
     db.query(query, (err, results) => {
         if (err) {
-            console.error('Error executing query:', err);
+            console.error('เกิดข้อผิดพลาดในการเรียกใช้คำสั่ง query:', err);
             res.status(500).send('Server error');
             return;
         }
@@ -45,11 +44,11 @@ app.get('/api/package-details', (req, res) => {
 });
 
 app.get('/api/user-table', (req, res) => {
-    const query = 'SELECT * FROM `user_pickup` INNER JOIN user_service where user_pickup.userv_id = user_service.userv_id;';
+    const query = 'SELECT * FROM `user_pickup` INNER JOIN user_service WHERE user_pickup.userv_id = user_service.userv_id;';
 
     db.query(query, (err, results) => {
         if (err) {
-            console.error('Error executing query:', err);
+            console.error('เกิดข้อผิดพลาดในการเรียกใช้คำสั่ง query:', err);
             res.status(500).send('Server error');
             return;
         }
@@ -58,43 +57,41 @@ app.get('/api/user-table', (req, res) => {
     });
 });
 
-
-// Insert data into user_pickup table
+// เพิ่มข้อมูลเข้าในตาราง user_pickup
 app.post('/api/pickup', (req, res) => {
-  const { userv_id,userp_quantity, userp_date, userp_package, userp_image, userp_status } = req.body;
+  const { userv_id, userp_quantity, userp_date, userp_package, userp_image, userp_status } = req.body;
   
-  const sql = 'INSERT INTO user_pickup (userv_id, userp_date, userp_package,userp_quantity, userp_image, userp_status) VALUES (?, ?, ?, ?, ?, ?)';
-  const values = [userv_id, userp_date, userp_package,userp_quantity, userp_image, userp_status];
+  const sql = 'INSERT INTO user_pickup (userv_id, userp_date, userp_package, userp_quantity, userp_image, userp_status) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [userv_id, userp_date, userp_package, userp_quantity, userp_image, userp_status];
   
   db.query(sql, values, (err, result) => {
     if (err) {
-      console.error(err);
+      console.error('เกิดข้อผิดพลาดในการแทรกข้อมูล:', err);
       res.status(500).send('Database insert error');
       return;
     }
-    res.status(200).send('Data inserted successfully');
+    res.status(200).send('แทรกข้อมูลสำเร็จ');
   });
 });
 
+// เพิ่มข้อมูลเข้าในตาราง user_service
 app.post('/api/service', (req, res) => {
-    const {user_id, userv_name, userv_tel, userv_letlong, userv_address, userv_detail } = req.body;
+    const { user_id, userv_name, userv_tel, userv_letlong, userv_address, userv_detail } = req.body;
     
-    const sql = 'INSERT INTO user_service (user_id,userv_name, userv_tel, userv_letlong, userv_address, userv_detail) VALUES (?,?, ?, ?, ?, ?)';
-    const values = [user_id,userv_name, userv_tel, userv_letlong, userv_address, userv_detail];
+    const sql = 'INSERT INTO user_service (user_id, userv_name, userv_tel, userv_letlong, userv_address, userv_detail) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [user_id, userv_name, userv_tel, userv_letlong, userv_address, userv_detail];
     
     db.query(sql, values, (err, result) => {
       if (err) {
-        console.error(err);
+        console.error('เกิดข้อผิดพลาดในการแทรกข้อมูล:', err);
         res.status(500).send('Database insert error');
         return;
       }
       const userv_id = result.insertId;
-      res.status(200).json({ userv_id }); // Send userv_id back as JSON response
+      res.status(200).json({ userv_id }); // ส่ง userv_id กลับในรูปแบบ JSON response
     });
-  });
-
-
+});
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`เซิร์ฟเวอร์ทำงานอยู่ที่พอร์ต ${port}`);
 });
